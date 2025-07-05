@@ -1,129 +1,256 @@
-# Dokkan'dle
+# 🐉 Dokkan'dle
 
-Une application web pour explorer les personnages de Dragon Ball Z: Dokkan Battle.
+Une application web moderne et interactive pour explorer l'univers de **Dragon Ball Z: Dokkan Battle**. Découvrez tous les personnages, leurs statistiques, compétences et plus encore dans une interface élégante et responsive.
 
-## Fonctionnalités
+![Dokkan'dle Preview](https://img.shields.io/badge/Status-Active-brightgreen)
+![PHP Version](https://img.shields.io/badge/PHP-8.1+-blue)
+![Symfony Version](https://img.shields.io/badge/Symfony-6.0+-orange)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-- **Liste des personnages** : Parcourir tous les personnages avec filtres et recherche
-- **Personnage du jour** : Découvrir un personnage aléatoire chaque jour
-- **Détails complets** : Informations détaillées sur chaque personnage
-- **Interface responsive** : Design adaptatif pour mobile et desktop
+## ✨ Fonctionnalités
 
-## Installation
+### 🎯 Fonctionnalités Principales
+- **📋 Base de données complète** : Plus de 1000 personnages de Dragon Ball Z: Dokkan Battle
+- **🔍 Recherche avancée** : Filtrage par nom, rareté, type et plus
+- **🎲 Personnage du jour** : Découverte aléatoire quotidienne
+- **🌍 Interface multilingue** : Français et Anglais
+- **📱 Design responsive** : Optimisé pour tous les appareils
+
+### 🎨 Interface Moderne
+- **Design sombre élégant** avec thème Dragon Ball
+- **Animations fluides** et effets visuels
+- **Navigation intuitive** avec icônes FontAwesome
+- **Cartes interactives** avec effets de survol
+- **Gradients et ombres** pour un rendu premium
+
+### 📊 Informations Détaillées
+- **Statistiques complètes** : PV, Attaque, Défense
+- **Catégories et liens** des personnages
+- **Compétences passives et actives**
+- **Attaques spéciales** avec descriptions
+- **Images haute qualité** des personnages
+
+## 🚀 Installation
 
 ### Prérequis
-
-- PHP 8.2 ou supérieur
+- PHP 8.1 ou supérieur
 - Composer
-- Serveur web (Apache/Nginx) ou serveur de développement Symfony
+- Serveur web (Apache/Nginx)
 
 ### Étapes d'installation
 
-1. Cloner le repository :
+1. **Cloner le repository**
 ```bash
-git clone <repository-url>
+git clone https://github.com/votre-username/dokkan-dle.git
 cd dokkan-dle
 ```
 
-2. Installer les dépendances :
+2. **Installer les dépendances**
 ```bash
 composer install
 ```
 
-3. Configurer les permissions :
+3. **Configurer l'environnement**
 ```bash
-chmod -R 777 var/
+cp .env.example .env
+# Éditer .env avec vos paramètres de base de données
 ```
 
-4. Lancer le serveur de développement :
+4. **Créer la base de données**
 ```bash
-php bin/console server:start
+php bin/console doctrine:database:create
+php bin/console doctrine:migrations:migrate
 ```
 
-5. Ouvrir votre navigateur à l'adresse : `http://localhost:8000`
+5. **Importer les données**
+```bash
+# Télécharger les images des personnages
+php bin/console app:download-unit-images
 
-## Structure du projet
+# Extraire les titres pour traduction
+php extract_titles.php
 
+# Traduire les données (optionnel)
+php translate_json.php
+```
+
+6. **Démarrer le serveur**
+```bash
+php -S localhost:8000 -t public
+```
+
+## 🎮 Utilisation
+
+### Navigation
+- **Accueil** : Vue d'ensemble avec statistiques et fonctionnalités
+- **Liste des personnages** : Parcourir et filtrer tous les personnages
+- **Personnage du jour** : Découvrir un personnage aléatoire
+
+### Filtres Disponibles
+- **Recherche par nom** : Recherche textuelle
+- **Filtre par rareté** : LR, UR, SSR, SR, R, N
+- **Filtre par type** : AGL, TEQ, INT, STR, PHY
+- **Tri** : Par nom ou rareté
+
+### Affichage
+- **Vue grille** : Cartes compactes avec images
+- **Vue liste** : Informations détaillées en liste
+- **Responsive** : Adaptation automatique sur mobile
+
+## 🛠️ Architecture
+
+### Structure du Projet
 ```
 dokkan-dle/
 ├── src/
-│   ├── Controller/
-│   │   ├── HomeController.php      # Page d'accueil
-│   │   ├── UnitsController.php     # Liste et détails des personnages
-│   │   └── UnitController.php      # Personnage du jour
-│   └── Command/                    # Commandes console
-├── templates/
-│   ├── base.html.twig             # Template de base
-│   ├── home/
-│   │   └── index.html.twig        # Page d'accueil
-│   └── units/
-│       ├── list.html.twig         # Liste des personnages
-│       └── show.html.twig         # Détails d'un personnage
+│   ├── Controller/          # Contrôleurs Symfony
+│   ├── Service/             # Services métier
+│   └── EventListener/       # Écouteurs d'événements
+├── templates/               # Templates Twig
 ├── public/
-│   ├── data/
-│   │   └── units.json             # Base de données des personnages
-│   └── images/
-│       ├── units/                 # Images des personnages
-│       └── fallback.png           # Image par défaut
-└── config/                        # Configuration Symfony
+│   ├── data/               # Fichiers JSON des données
+│   └── images/             # Images des personnages
+├── config/                 # Configuration Symfony
+└── bin/                    # Commandes console
 ```
 
-## Utilisation
+### Technologies Utilisées
+- **Backend** : Symfony 6.x, PHP 8.1+
+- **Frontend** : Twig, CSS3, JavaScript ES6+
+- **Design** : CSS Grid, Flexbox, Animations CSS
+- **Icônes** : FontAwesome 6
+- **Polices** : Orbitron, Roboto (Google Fonts)
 
-### Navigation
+## 🎨 Design System
 
-- **Accueil** (`/`) : Page d'accueil avec présentation des fonctionnalités
-- **Liste des personnages** (`/units`) : Parcourir et filtrer les personnages
-- **Personnage du jour** (`/unit-of-the-day`) : Personnage aléatoire
-- **Détails d'un personnage** (`/unit/{id}`) : Informations complètes
+### Palette de Couleurs
+```css
+--primary-color: #ff6b35;      /* Orange Dragon Ball */
+--secondary-color: #f7931e;    /* Orange secondaire */
+--accent-color: #ffd700;       /* Or accent */
+--dark-bg: #1a1a2e;           /* Fond sombre */
+--card-bg: #16213e;           /* Fond des cartes */
+```
 
-### Filtres disponibles
+### Composants
+- **Cartes** : Bordures arrondies, ombres, effets de survol
+- **Boutons** : Gradients, animations, états interactifs
+- **Navigation** : Barre sticky, backdrop blur
+- **Formulaires** : Champs stylisés, focus states
 
-- **Recherche par nom** : Recherche textuelle dans les noms
-- **Filtre par rareté** : UR, LR, SSR, SR, R, N
-- **Filtre par type** : AGL, TEQ, INT, STR, PHY
-- **Tri** : Par nom ou par rareté
+## 🌍 Internationalisation
 
-## Technologies utilisées
+### Langues Supportées
+- 🇫🇷 **Français** (par défaut)
+- 🇺🇸 **Anglais**
 
-- **Symfony 7.3** : Framework PHP
-- **Twig** : Moteur de templates
-- **CSS3** : Styles et design responsive
-- **JavaScript** : Interactions côté client
+### Système de Traduction
+- Fichiers de traduction PHP
+- Service de traduction Symfony
+- Basculement dynamique en session
+- Traduction des données JSON
 
-## Développement
+## 📱 Responsive Design
 
-### Ajouter un nouveau personnage
+### Breakpoints
+- **Desktop** : 1200px+
+- **Tablet** : 768px - 1199px
+- **Mobile** : < 768px
 
-1. Ajouter les données dans `public/data/units.json`
-2. Ajouter l'image correspondante dans `public/images/units/`
-3. Mettre à jour le champ `localImagePath` dans le JSON
+### Adaptations
+- Navigation en hamburger sur mobile
+- Grille adaptative pour les cartes
+- Images redimensionnées
+- Boutons et formulaires optimisés
 
-### Commandes utiles
+## 🔧 Commandes Console
 
+### Commandes Disponibles
 ```bash
+# Télécharger les images des personnages
+php bin/console app:download-unit-images
+
+# Extraire les données Dokkan
+php bin/console app:dokkan-fetch
+
 # Vider le cache
 php bin/console cache:clear
-
-# Lister les routes
-php bin/console debug:router
-
-# Vérifier la configuration
-php bin/console debug:config
 ```
 
-## Licence
+## 📊 Données
 
-Ce projet est sous licence propriétaire.
+### Sources
+- **API Dokkan Battle** : Données des personnages
+- **Images** : Téléchargement automatique
+- **Traductions** : Système de traduction personnalisé
 
-## Contribution
+### Structure JSON
+```json
+{
+  "id": "11000",
+  "name": "Goku",
+  "title": "Super Saiyan",
+  "rarity": "UR",
+  "type": "AGL",
+  "hp": 15000,
+  "attack": 12000,
+  "defense": 8000,
+  "categories": ["Saiyan", "Super Saiyan"],
+  "links": ["Kamehameha", "Super Saiyan"],
+  "passiveSkill": "...",
+  "superAttack": "..."
+}
+```
 
-Les contributions sont les bienvenues ! N'hésitez pas à :
+## 🚀 Déploiement
 
-1. Signaler des bugs
-2. Proposer des améliorations
-3. Soumettre des pull requests
+### Production
+1. Configurer l'environnement de production
+2. Optimiser les assets (CSS/JS minification)
+3. Configurer le serveur web
+4. Mettre en place un CDN pour les images
 
-## Support
+### Recommandations
+- **Serveur** : Apache/Nginx avec PHP-FPM
+- **Base de données** : MySQL 8.0+ ou PostgreSQL
+- **Cache** : Redis ou Memcached
+- **CDN** : Cloudflare ou AWS CloudFront
 
-Pour toute question ou problème, veuillez ouvrir une issue sur le repository. 
+## 🤝 Contribution
+
+### Comment Contribuer
+1. Fork le projet
+2. Créer une branche feature (`git checkout -b feature/AmazingFeature`)
+3. Commit les changements (`git commit -m 'Add AmazingFeature'`)
+4. Push vers la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrir une Pull Request
+
+### Standards de Code
+- PSR-12 pour PHP
+- ESLint pour JavaScript
+- Prettier pour le formatage
+- Tests unitaires pour les nouvelles fonctionnalités
+
+## 📄 Licence
+
+Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+
+## 🙏 Remerciements
+
+- **Bandai Namco** pour Dragon Ball Z: Dokkan Battle
+- **Symfony** pour le framework PHP
+- **FontAwesome** pour les icônes
+- **Google Fonts** pour les polices
+
+## 📞 Support
+
+- **Issues** : [GitHub Issues](https://github.com/votre-username/dokkan-dle/issues)
+- **Discussions** : [GitHub Discussions](https://github.com/votre-username/dokkan-dle/discussions)
+- **Email** : support@dokkan-dle.com
+
+---
+
+<div align="center">
+  <p>Fait avec ❤️ par la communauté Dragon Ball</p>
+  <p>⚡ Puissance maximale ! ⚡</p>
+</div> 

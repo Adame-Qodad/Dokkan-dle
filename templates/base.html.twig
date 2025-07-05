@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Dokkan'dle{% endblock %}</title>
+        <link rel="icon" href="https://static.wikia.nocookie.net/dbz-dokkanbattle/images/8/8c/Dragon_Ball_Z_Dokkan_Battle_Logo.png">
+        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <style>
+            :root {
+                --primary-color: #ff6b35;
+                --secondary-color: #f7931e;
+                --accent-color: #ffd700;
+                --dark-bg: #1a1a2e;
+                --card-bg: #16213e;
+                --text-light: #ffffff;
+                --text-gray: #b8b8b8;
+                --gradient-primary: linear-gradient(135deg, #ff6b35, #f7931e);
+                --gradient-secondary: linear-gradient(135deg, #667eea, #764ba2);
+                --shadow: 0 10px 30px rgba(0,0,0,0.3);
+                --shadow-hover: 0 20px 40px rgba(0,0,0,0.4);
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Roboto', sans-serif;
+                background: var(--dark-bg);
+                color: var(--text-light);
+                line-height: 1.6;
+                overflow-x: hidden;
+            }
+
+            /* Animated background */
+            body::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: 
+                    radial-gradient(circle at 20% 80%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(247, 147, 30, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 40%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+                z-index: -1;
+                animation: backgroundShift 20s ease-in-out infinite;
+            }
+
+            @keyframes backgroundShift {
+                0%, 100% { transform: scale(1) rotate(0deg); }
+                50% { transform: scale(1.1) rotate(1deg); }
+            }
+
+            /* Navigation */
+            .navbar {
+                background: rgba(26, 26, 46, 0.95);
+                backdrop-filter: blur(10px);
+                border-bottom: 2px solid var(--primary-color);
+                padding: 1rem 2rem;
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                box-shadow: var(--shadow);
+            }
+
+            .nav-container {
+                max-width: 1400px;
+                margin: 0 auto;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .nav-brand {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .nav-brand img {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                box-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+            }
+
+            .nav-brand h1 {
+                font-family: 'Orbitron', monospace;
+                font-size: 1.8rem;
+                font-weight: 900;
+                background: var(--gradient-primary);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                text-shadow: 0 0 30px rgba(255, 107, 53, 0.5);
+            }
+
+            .nav-links {
+                display: flex;
+                align-items: center;
+                gap: 2rem;
+            }
+
+            .nav-links a {
+                color: var(--text-light);
+                text-decoration: none;
+                font-weight: 500;
+                padding: 0.5rem 1rem;
+                border-radius: 25px;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .nav-links a::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: var(--gradient-primary);
+                transition: left 0.3s ease;
+                z-index: -1;
+            }
+
+            .nav-links a:hover::before {
+                left: 0;
+            }
+
+            .nav-links a:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+            }
+
+            /* Language selector */
+            .language-selector {
+                display: flex;
+                gap: 0.5rem;
+                margin-left: 2rem;
+            }
+
+            .lang-btn {
+                padding: 0.5rem 1rem;
+                border: 2px solid var(--primary-color);
+                border-radius: 25px;
+                font-weight: bold;
+                font-size: 0.9rem;
+                transition: all 0.3s ease;
+                background: transparent;
+                color: var(--text-light);
+                cursor: pointer;
+                text-decoration: none;
+            }
+
+            .lang-btn:hover {
+                background: var(--gradient-primary);
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+            }
+
+            .lang-btn.active {
+                background: var(--gradient-primary);
+                box-shadow: 0 0 20px rgba(255, 107, 53, 0.6);
+            }
+
+            /* Main container */
+            .container {
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 2rem;
+                min-height: calc(100vh - 100px);
+            }
+
+            /* Buttons */
+            .btn {
+                display: inline-block;
+                padding: 0.8rem 2rem;
+                background: var(--gradient-primary);
+                color: var(--text-light);
+                text-decoration: none;
+                border-radius: 50px;
+                font-weight: 600;
+                border: none;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: var(--shadow);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+                transition: left 0.5s ease;
+            }
+
+            .btn:hover::before {
+                left: 100%;
+            }
+
+            .btn:hover {
+                transform: translateY(-3px);
+                box-shadow: var(--shadow-hover);
+            }
+
+            /* Cards */
+            .card {
+                background: var(--card-bg);
+                border-radius: 20px;
+                padding: 2rem;
+                box-shadow: var(--shadow);
+                border: 1px solid rgba(255, 107, 53, 0.2);
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background: var(--gradient-primary);
+            }
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: var(--shadow-hover);
+                border-color: var(--primary-color);
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .nav-container {
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+
+                .nav-links {
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    gap: 1rem;
+                }
+
+                .language-selector {
+                    margin-left: 0;
+                }
+
+                .container {
+                    padding: 1rem;
+                }
+            }
+
+            /* Animations */
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .fade-in-up {
+                animation: fadeInUp 0.6s ease-out;
+            }
+
+            /* Loading animation */
+            .loading {
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                border: 3px solid rgba(255, 107, 53, 0.3);
+                border-radius: 50%;
+                border-top-color: var(--primary-color);
+                animation: spin 1s ease-in-out infinite;
+            }
+
+            @keyframes spin {
+                to { transform: rotate(360deg); }
+            }
+        </style>
+        {% block stylesheets %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+    </head>
+    <body>
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <img src="https://static.wikia.nocookie.net/dbz-dokkanbattle/images/8/8c/Dragon_Ball_Z_Dokkan_Battle_Logo.png" alt="Dokkan'dle">
+                    <h1>Dokkan'dle</h1>
+                </div>
+                
+                <div class="nav-links">
+                    <a href="{{ path('home') }}">{{ app.request.attributes.get('translations').home|default('Accueil') }}</a>
+                    <a href="{{ path('units_list') }}">{{ app.request.attributes.get('translations').units_list|default('Liste des personnages') }}</a>
+                    <a href="{{ path('unit_of_the_day') }}">{{ app.request.attributes.get('translations').unit_of_the_day|default('Personnage du jour') }}</a>
+                </div>
+                
+                <div class="language-selector">
+                    <a href="{{ path('change_language', {locale: 'fr'}) }}" class="lang-btn {{ app.session.get('locale', 'fr') == 'fr' ? 'active' : '' }}">🇫🇷 FR</a>
+                    <a href="{{ path('change_language', {locale: 'en'}) }}" class="lang-btn {{ app.session.get('locale', 'fr') == 'en' ? 'active' : '' }}">🇺🇸 EN</a>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="container">
+            {% block body %}{% endblock %}
+        </div>
+
+        <script>
+            // Add fade-in animation to elements
+            document.addEventListener('DOMContentLoaded', function() {
+                const elements = document.querySelectorAll('.card, .btn, .feature-card');
+                elements.forEach((el, index) => {
+                    el.style.animationDelay = `${index * 0.1}s`;
+                    el.classList.add('fade-in-up');
+                });
+            });
+        </script>
+    </body>
+</html>
