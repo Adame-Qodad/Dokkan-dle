@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  # Application Dokkan'dle
+  dokkan-dle:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dokkan-dle-app
+    ports:
+      - "8080:80"
+    environment:
+      - APP_ENV=prod
+      - APP_DEBUG=0
+      - CLEAR_CACHE=false
+    volumes:
+      # Volume pour les données persistantes
+      - dokkan_data:/var/www/html/public/data
+      - dokkan_images:/var/www/html/public/images
+      # Volume pour les logs
+      - dokkan_logs:/var/www/html/var/log
+    depends_on:
+      - mysql
+    restart: unless-stopped
+    networks:
+      - dokkan-network
+
+  # Base de données MySQL (optionnel)
+  mysql:
+    image: mysql:8.0
+    container_name: dokkan-dle-db
+    environment:
+      MYSQL_ROOT_PASSWORD: dokkan_root_password
+      MYSQL_DATABASE: dokkan_dle
+      MYSQL_USER: dokkan_user
+      MYSQL_PASSWORD: dokkan_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    restart: unless-stopped
+    networks:
+      - dokkan-network
+
+  # Redis pour le cache (optionnel)
+  redis:
+    image: redis:7-alpine
+    container_name: dokkan-dle-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - dokkan-network
+
+  # Nginx reverse proxy (optionnel)
+  nginx:
+    image: nginx:alpine
+    container_name: dokkan-dle-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - dokkan-dle
+    restart: unless-stopped
+    networks:
+      - dokkan-network
+
+volumes:
+  dokkan_data:
+    driver: local
+  dokkan_images:
+    driver: local
+  dokkan_logs:
+    driver: local
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  dokkan-network:
+    driver: bridge 
